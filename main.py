@@ -184,7 +184,7 @@ def train_model():
                 publish_progress(overall_progress)
         
         callback = TrainingProgressCallback(completed_phases, total_phases)
-        model.fit(X_train, y_train, epochs=5000, batch_size=32, validation_data=(X_test, y_test), 
+        model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_test, y_test), 
                   callbacks=[callback], verbose=0)
         model_file = f'rtls_model_{mac.replace(":", "_")}.keras'
         model.save(model_file)
