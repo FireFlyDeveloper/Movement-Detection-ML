@@ -80,7 +80,7 @@ def publish_progress(progress):
     client.publish(training_status_topic, json.dumps(message), qos=0)
     print(f"Published progress: {message}")
 
-def collect_data(label, num_samples=5000, interval=0.1, progress_callback=None):
+def collect_data(label, num_samples=500, interval=0.1, progress_callback=None):
     """Collect RSSI data for all target MACs with progress updates."""
     data = {mac: [] for mac in target_macs}
     print(f"Collecting {num_samples} samples for all MACs with label {label}")
@@ -108,7 +108,7 @@ def collect_data(label, num_samples=5000, interval=0.1, progress_callback=None):
         progress_callback(1.0)  # Signal completion of data collection
     return data
 
-def simulate_not_in_position_data(in_position_data, num_samples=5000, noise_std=5.0, shift_range=20.0):
+def simulate_not_in_position_data(in_position_data, num_samples=500, noise_std=8.0, shift_range=20.0):
     """Simulate 'not in position' data based on in-position data."""
     data = []
     in_position_rssi = np.array([d[:4] for d in in_position_data], dtype=float)
@@ -179,7 +179,7 @@ def train_model():
                 self.total_phases = total_phases
             
             def on_epoch_end(self, epoch, logs=None):
-                phase_progress = (epoch + 1) / 5000  # Assuming 5000 epochs
+                phase_progress = (epoch + 1) / 100  # Assuming 5000 epochs
                 overall_progress = (self.completed_phases + phase_progress) / self.total_phases * 100
                 publish_progress(overall_progress)
         
