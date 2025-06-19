@@ -1,0 +1,6 @@
+paho-mqtt
+numpy
+tensorflow
+scikit-learn
+joblib
+psycopg2
