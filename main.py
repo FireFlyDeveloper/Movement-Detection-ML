@@ -17,7 +17,7 @@ import re
 # MQTT settings
 broker = 'security.local'
 port = 1883
-topics = ['esp32_1/rssi', 'esp32_2/rssi', 'esp32_3/rssi', 'esp32_4/rssi', 'mode/train']
+topics = ['esp32_1/rssi', 'esp32_2/rssi', 'esp32_3/rssi', 'esp32_4/rssi']
 publish_topic = 'rtls/position_status'
 training_status_topic = 'training/status'
 
