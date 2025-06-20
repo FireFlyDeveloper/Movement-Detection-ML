@@ -75,21 +75,15 @@ def on_message(client, userdata, msg, properties=None):
     """Handle incoming MQTT messages."""
     global training_requests
     try:
-        if msg.topic == 'mode/train':
-            print("Training mode requested via MQTT")
+        data = json.loads(msg.payload.decode('utf-8'))
+        mac = data['mac'].lower()
+        if mac in target_macs_set:
+            esp = data['esp']
+            rssi = data['rssi']
             with lock:
-                for mac in target_macs:
-                    training_requests[mac] = True
-        else:
-            data = json.loads(msg.payload.decode('utf-8'))
-            mac = data['mac'].lower()
-            if mac in target_macs_set:
-                esp = data['esp']
-                rssi = data['rssi']
-                with lock:
-                    latest_rssi[mac][esp].append(rssi)
-                    last_update_time[mac][esp] = time.time()
-                print(f"Received RSSI for MAC {mac}: ESP{esp} = {rssi}")
+                latest_rssi[mac][esp].append(rssi)
+                last_update_time[mac][esp] = time.time()
+            print(f"Received RSSI for MAC {mac}: ESP{esp} = {rssi}")
     except Exception as e:
         print(f"Error processing message: {e}")
 
