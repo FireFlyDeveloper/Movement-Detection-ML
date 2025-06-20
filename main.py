@@ -11,7 +11,7 @@ from collections import deque
 import os
 import threading
 from database import get_all_devices
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 import re
 
 # MQTT settings
