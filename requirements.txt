@@ -4,3 +4,4 @@ tensorflow
 scikit-learn
 joblib
 psycopg2
+flask
