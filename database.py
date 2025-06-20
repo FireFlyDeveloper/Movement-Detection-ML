@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2 import pool
 import logging
 
 # Configure logging
@@ -7,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize connection pool (configure with your database credentials)
 try:
-    db_pool = psycopg2.pool.SimpleConnectionPool(
+    db_pool = pool.SimpleConnectionPool(
         minconn=1,
         maxconn=10,
         dbname="casaos",   # Replace with your database name

@@ -12,9 +12,6 @@ import os
 import threading
 from database import get_all_devices
 
-# Suppress TensorFlow oneDNN warnings
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-
 # MQTT settings
 broker = 'security.local'
 port = 1883
