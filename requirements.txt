@@ -3,5 +3,5 @@ numpy
 tensorflow
 scikit-learn
 joblib
-psycopg2
+psycopg2-binary
 flask

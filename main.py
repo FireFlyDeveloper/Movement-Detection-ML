@@ -41,7 +41,7 @@ training_lock = threading.Lock()
 global_models = {}
 global_scalers = {}
 training_in_progress = set()
-training_semaphore = threading.Semaphore(2)  # Limit concurrent trainings
+training_semaphore = threading.Semaphore(4)  # Limit concurrent trainings
 
 def validate_mac(mac):
     mac_pattern = re.compile(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$')
@@ -137,24 +137,28 @@ def collect_data(mac, label, num_samples=500, interval=0.1, progress_callback=No
         progress_callback(1.0)
     return data
 
-def simulate_not_in_position_data(in_position_data, num_samples=500, noise_std=10.0, shift_range=100.0):
+def simulate_not_in_position_data(in_position_data, num_samples=500, noise_std=8.0, max_distance_factor=3.0):
     if not in_position_data:
         return []
     
     data = []
     in_position_rssi = np.array([d[:4] for d in in_position_data], dtype=float)
+    mean_rssi = np.mean(in_position_rssi, axis=0)
     
     for i in range(num_samples):
-        base_rssi = in_position_rssi[np.random.randint(len(in_position_rssi))]
-        shift_factor = (i / (num_samples - 1)) * shift_range
-        directional_shift = np.full(4, shift_factor)
+        distance_factor = np.random.uniform(1.0, max_distance_factor)
+        path_loss = 20 * np.log10(distance_factor)
         noise = np.random.normal(0, noise_std, size=4)
-        moved_rssi = base_rssi + directional_shift + noise
-        moved_rssi = np.clip(moved_rssi, -100, -30)
-        data.append(list(moved_rssi) + [0])
+        
+        env_factor = np.random.uniform(0.8, 1.2, size=4)
+        simulated_rssi = mean_rssi - path_loss * env_factor + noise
+        
+        simulated_rssi = np.clip(simulated_rssi + np.random.uniform(-5, 5, size=4), -100, -30)
+        
+        data.append(list(simulated_rssi) + [0])
         
         if i % 100 == 0:
-            print(f"Simulated RSSI sample {i}: {moved_rssi}")
+            print(f"Simulated RSSI sample {i}: {simulated_rssi}")
     
     return data
 
